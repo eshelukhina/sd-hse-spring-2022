@@ -15,18 +15,19 @@ import kotlin.io.path.name
 
 /**
  * Represents the `ls`-command in CLI.
+ * Lists files and directories within working directory
  */
 data class LsCommand(
     /**
-     * Possible name of the file, contents of which are printed to output.
-     * If the file is not provided, then input is used instead.
+     * Possible path of the file or directory.
+     * If the path is not provided, then path to working directory is used instead.
      */
     val argument: String?
 ) : Command() {
     override fun execute(context: IoContext, env: Environment): CommandResult {
         val execute = { path: Path ->
             path.listDirectoryEntries().stream().map { p -> p.name }.sorted()
-                .reduce { a, b -> a + "\n" + b }.orElse("")
+                .reduce { a, b -> a + System.lineSeparator() + b }.orElse("") + System.lineSeparator()
         }
         if (argument == null) {
             context.output.write(execute(env.workingDirectory))
@@ -34,14 +35,14 @@ data class LsCommand(
         }
         val expectedPath = env.workingDirectory.resolve(argument)
         if (expectedPath.isRegularFile()) {
-            context.output.write(expectedPath.toString())
+            context.output.write(argument + System.lineSeparator())
             return CodeResult.success
         }
         if (expectedPath.isDirectory()) {
             context.output.write(execute(expectedPath))
             return CodeResult.success
         }
-        context.error.write("ls: ${argument}: invalid path")
+        context.error.write("ls: ${argument}: invalid path" + System.lineSeparator())
         return CodeResult.internalError
     }
 }

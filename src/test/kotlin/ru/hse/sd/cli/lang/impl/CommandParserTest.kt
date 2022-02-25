@@ -3,7 +3,7 @@ package ru.hse.sd.cli.lang.impl
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import ru.hse.sd.cli.command.*
+import ru.hse.sd.cli.command.Command
 import ru.hse.sd.cli.command.impl.*
 import kotlin.test.assertEquals
 
@@ -23,6 +23,8 @@ internal class CommandParserTest {
         @JvmStatic
         fun testSource() = listOf(
             Arguments.of("ls", LsCommand(null)),
+            Arguments.of("ls dir/dir/file.txt", LsCommand("dir/dir/file.txt")),
+            Arguments.of("cd", CdCommand(null)),
             Arguments.of("echo", EchoCommand(emptyList())),
             Arguments.of(
                 "echo 1 2 \"ab c\" 45 'd ef'", EchoCommand(
@@ -37,7 +39,6 @@ internal class CommandParserTest {
             Arguments.of("wc filename", WcCommand("filename")),
             Arguments.of("pwd", PwdCommand),
             Arguments.of("exit", ExitCommand),
-            Arguments.of("cd myProject", ExternalCommand("cd", listOf("myProject"))),
             Arguments.of(
                 "echo 1 | cat 2 | wc 3",
                 PipeCommand(
