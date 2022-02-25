@@ -8,6 +8,6 @@ import kotlin.test.assertTrue
 class LsTest : CommandExecutorTest() {
     @Test
     fun `Simple eng ls test`() = withTestContext {
-        testFullOutput("ls", "")
+        testFullOutput("ls src/test/resources/test_ls", "a.txt\nb.txt\nc.txt")
     }
 }
