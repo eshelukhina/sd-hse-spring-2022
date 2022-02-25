@@ -23,6 +23,7 @@ internal class CommandLexerTest {
     companion object {
         @JvmStatic
         fun testSource() = listOf(
+            Arguments.of("ls", listOf(CommandGrammar.lsToken to "ls")),
             Arguments.of("echo", listOf(CommandGrammar.echoToken to "echo")),
             Arguments.of("cat", listOf(CommandGrammar.catToken to "cat")),
             Arguments.of("wc", listOf(CommandGrammar.wcToken to "wc")),

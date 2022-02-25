@@ -18,6 +18,7 @@ object CommandGrammar : Grammar<Command>() {
     internal val pipeToken by literalToken("|")
     internal val equalToken by literalToken("=")
     internal val substitutionToken by regexToken("\\$[^\\s=|\"'\$]+")
+    internal val lsToken by literalToken("ls")
     internal val catToken by literalToken("cat")
     internal val echoToken by literalToken("echo")
     internal val wcToken by literalToken("wc")
@@ -28,7 +29,7 @@ object CommandGrammar : Grammar<Command>() {
     internal val doubleQuoteToken by regexToken("\"[^\"]*\"")
     internal val identifierToken by regexToken("[^\\s=|\"'$]+")
 
-    private val weakCommandName by catToken or echoToken or wcToken or pwdToken or exitToken
+    private val weakCommandName by catToken or echoToken or wcToken or pwdToken or exitToken or lsToken
     private val literal by identifierToken or quoteToken or doubleQuoteToken or weakCommandName map {
         when (it.type) {
             quoteToken -> it.text.removeSurrounding("'")
@@ -37,6 +38,7 @@ object CommandGrammar : Grammar<Command>() {
         }
     }
 
+    private val lsTerm by lsToken and optional(literal) map { LsCommand(it.t2) }
     private val echoTerm by echoToken and zeroOrMore(literal) map { EchoCommand(it.t2) }
     private val catTerm by catToken and optional(literal) map { CatCommand(it.t2) }
     private val wcTerm by wcToken and optional(literal) map { WcCommand(it.t2) }
@@ -46,7 +48,7 @@ object CommandGrammar : Grammar<Command>() {
     private val externalCommandTerm by literal and zeroOrMore(literal) map { (name, args) ->
         ExternalCommand(name, args)
     }
-    private val term by echoTerm or catTerm or wcTerm or pwdTerm or exitTerm or grepTerm or externalCommandTerm
+    private val term by lsTerm or echoTerm or catTerm or wcTerm or pwdTerm or exitTerm or grepTerm or externalCommandTerm
 
     private val pipeChain by leftAssociative(term, pipeToken) { l, _, r ->
         PipeCommand(l, r)

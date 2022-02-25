@@ -22,6 +22,7 @@ internal class CommandParserTest {
     companion object {
         @JvmStatic
         fun testSource() = listOf(
+            Arguments.of("ls", LsCommand(null)),
             Arguments.of("echo", EchoCommand(emptyList())),
             Arguments.of(
                 "echo 1 2 \"ab c\" 45 'd ef'", EchoCommand(
