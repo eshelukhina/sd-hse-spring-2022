@@ -27,12 +27,12 @@ data class CdCommand(
             env.workingDirectory = Path.of("").toAbsolutePath()
             return CodeResult.success
         }
-        val expectedPath = env.workingDirectory.resolve(argument).toAbsolutePath()
+        val expectedPath = env.workingDirectory.resolve(argument)
         if (!expectedPath.isDirectory()) {
             context.error.write("cd: ${expectedPath}: invalid input")
             return CodeResult.internalError
         }
-        env.workingDirectory = expectedPath
+        env.workingDirectory = expectedPath.normalize()
         return CodeResult.success
     }
 }

@@ -8,7 +8,7 @@ class CdTest : CommandExecutorTest() {
     @Test
     fun `cd with arg`() = withTestContext {
         testFullOutput("cd src/test/resources/test_dir", "")
-        testFullOutput("ls", "a.txt\nb.txt\nc.txt\ncrazy_dir\ndir\n")
+        testFullOutput("ls", "a.txt\nb.txt\nc.txt\ndir\n")
     }
 
     @Test
@@ -16,6 +16,6 @@ class CdTest : CommandExecutorTest() {
         testFullOutput("cd src/test/resources/test_dir", "")
         testFullOutput("cd", "")
         testFullOutput("cd src/test/resources/test_dir", "")
-        testFullOutput("ls", "a.txt\nb.txt\nc.txt\ncrazy_dir\ndir\n")
+        testFullOutput("ls", "a.txt\nb.txt\nc.txt\ndir\n")
     }
 }

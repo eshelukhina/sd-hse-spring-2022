@@ -25,12 +25,12 @@ data class LsCommand(
     val argument: String?
 ) : Command() {
     override fun execute(context: IoContext, env: Environment): CommandResult {
-        val execute = { path: Path ->
+        val directoryContents = { path: Path ->
             path.listDirectoryEntries().stream().map { p -> p.name }.sorted()
                 .reduce { a, b -> a + System.lineSeparator() + b }.orElse("") + System.lineSeparator()
         }
         if (argument == null) {
-            context.output.write(execute(env.workingDirectory))
+            context.output.write(directoryContents(env.workingDirectory))
             return CodeResult.success
         }
         val expectedPath = env.workingDirectory.resolve(argument)
@@ -39,7 +39,7 @@ data class LsCommand(
             return CodeResult.success
         }
         if (expectedPath.isDirectory()) {
-            context.output.write(execute(expectedPath))
+            context.output.write(directoryContents(expectedPath))
             return CodeResult.success
         }
         context.error.write("ls: ${argument}: invalid path" + System.lineSeparator())
