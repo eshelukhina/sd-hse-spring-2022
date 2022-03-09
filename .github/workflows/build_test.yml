@@ -6,7 +6,7 @@ on:
     push:
         branches: [main, cli, hw04/base]
     pull_request:
-        branches: [main, cli, hw04/base]
+        branches: [main, cli, hw04/base, hw04/main]
 
 jobs:
     gradle:
