@@ -6,12 +6,9 @@ import ru.hse.sd.cli.command.CommandResult
 import ru.hse.sd.cli.env.Environment
 import ru.hse.sd.cli.env.IoContext
 import ru.hse.sd.cli.util.write
-
 import java.nio.file.Path
-import kotlin.io.path.isDirectory
-import kotlin.io.path.isRegularFile
-import kotlin.io.path.listDirectoryEntries
-import kotlin.io.path.name
+import java.nio.file.Paths
+import kotlin.io.path.*
 
 /**
  * Represents the `ls`-command in CLI.
@@ -33,16 +30,25 @@ data class LsCommand(
             context.output.write(directoryContents(env.workingDirectory))
             return CodeResult.success
         }
-        val expectedPath = env.workingDirectory.resolve(argument)
+        val expectedPath = env.workingDirectory.resolve(argument).normalize()
+        if (!expectedPath.exists()) {
+            context.error.write("ls: ${argument}: Invalid path" + System.lineSeparator())
+            return CodeResult.internalError
+        }
+        if (argument.endsWith('/') or argument.endsWith('\\')) {
+            return if (expectedPath.isDirectory()) {
+                context.output.write(directoryContents(expectedPath))
+                CodeResult.success
+            } else {
+                context.error.write("ls: ${argument}: Not a directory" + System.lineSeparator())
+                CodeResult.internalError
+            }
+        }
         if (expectedPath.isRegularFile()) {
-            context.output.write(argument + System.lineSeparator())
+            context.output.write(Paths.get(argument).normalize().toString() + System.lineSeparator())
             return CodeResult.success
         }
-        if (expectedPath.isDirectory()) {
-            context.output.write(directoryContents(expectedPath))
-            return CodeResult.success
-        }
-        context.error.write("ls: ${argument}: invalid path" + System.lineSeparator())
-        return CodeResult.internalError
+        context.output.write(directoryContents(expectedPath))
+        return CodeResult.success
     }
 }
