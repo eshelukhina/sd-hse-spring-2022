@@ -23,6 +23,7 @@ data class ExternalCommand(
     override fun execute(context: IoContext, env: Environment): CommandResult {
         val process = ProcessBuilder().apply {
             command(name, *args.toTypedArray())
+            directory(env.workingDirectory.toFile())
             environment() += env.variables
         }.start()
         context.input.transferTo(process.outputStream)

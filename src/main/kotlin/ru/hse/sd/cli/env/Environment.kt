@@ -11,8 +11,7 @@ class Environment {
     /**
      * Current working directory.
      */
-    val workingDirectory: Path
-        get() = Path.of("").toAbsolutePath()
+    var workingDirectory: Path = Path.of("").toAbsolutePath()
 
     /**
      * All the current environment variables.

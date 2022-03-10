@@ -12,6 +12,8 @@ object FileContentResources {
 
     val notExistsFilename = Path.of(resourcesDirPath, "not-exists.txt").toString()
 
+    val notExistsDirectory = Path.of(resourcesDirPath, "not-exists").toString()
+
     val hellosFilename = Path.of(resourcesDirPath, "hellos.txt").toString()
 
     val engLorem = File(engLoremFilename).readText()
