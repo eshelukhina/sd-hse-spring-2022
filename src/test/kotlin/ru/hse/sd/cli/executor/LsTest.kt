@@ -59,7 +59,7 @@ class LsTest : CommandExecutorTest() {
     fun `ls with non-existent file`() = withTestContext {
         test(
             "ls ${FileContentResources.notExistsFilename}",
-            error = "ls: ${FileContentResources.notExistsFilename}: invalid path"
+            error = "ls: ${FileContentResources.notExistsFilename}: Invalid path"
         ) {
             assertTrue { it is CodeResult && it.code != 0 }
         }

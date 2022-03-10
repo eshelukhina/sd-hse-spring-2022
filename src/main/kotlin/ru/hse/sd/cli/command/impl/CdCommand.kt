@@ -8,6 +8,7 @@ import ru.hse.sd.cli.env.IoContext
 import ru.hse.sd.cli.util.write
 
 import java.nio.file.Path
+import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 
 
@@ -28,8 +29,12 @@ data class CdCommand(
             return CodeResult.success
         }
         val expectedPath = env.workingDirectory.resolve(argument)
+        if (!expectedPath.exists()) {
+            context.error.write("cd: ${argument}: No such file or directory" + System.lineSeparator())
+            return CodeResult.internalError
+        }
         if (!expectedPath.isDirectory()) {
-            context.error.write("cd: ${expectedPath}: invalid input")
+            context.error.write("cd: ${argument}: Not a directory" + System.lineSeparator())
             return CodeResult.internalError
         }
         env.workingDirectory = expectedPath.normalize()
